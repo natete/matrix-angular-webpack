@@ -1,9 +1,19 @@
 'use strict';
 
-// Declare app level module which depends on views, and components
-angular.module('myApp', [
-]).
-config(['$locationProvider', function($locationProvider) {
-  $locationProvider.hashPrefix('!');
+import {} from 'angular-ui-router';
+import {} from './view1/view1.module';
+import {} from './view2/view2.module';
 
-}]);
+angular
+  .module('myApp',
+    [
+      'ui.router',
+      'myApp.view1',
+      'myApp.view2'
+    ])
+  .config(config);
+
+/* @ngInject */
+function config($locationProvider) {
+  $locationProvider.hashPrefix('!');
+}

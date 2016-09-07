@@ -1,9 +1,11 @@
 var webpack = require('webpack');
 var autoprefixer = require('autoprefixer');
 var bootstrapEntryPoints = require('./webpack.bootstrap.config');
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
+var extractSass = new ExtractTextPlugin('styles.css');
 module.exports = {
   context: __dirname + '/scripts/app',
-  watch: true,
+  // watch: true,
   entry: [
     bootstrapEntryPoints.dev,
     './index'
@@ -16,9 +18,12 @@ module.exports = {
   module: {
     loaders: [
       {
-        test: /\.js$/,
+        test: /scripts.*\.js$/,
         exclude: /node_modules/,
-        loader: 'babel'
+        loaders: [
+          'ng-annotate?add=true&remove=true&single_quotes=true',
+          'babel?cacheDirectory=true'
+        ]
       },
       { 
         test: /bootstrap-sass\/assets\/javascripts\//, 
@@ -27,7 +32,7 @@ module.exports = {
       {
         test: /\.scss$/,
         exclude: /node_modules/,
-        loaders: ['style', 'css', 'postcss', 'sass']
+        loader: extractSass.extract(['style', 'css', 'postcss', 'sass'])
       },
       {
         test: /\.woff2?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
@@ -36,10 +41,16 @@ module.exports = {
       {
         test: /\.(ttf|eot|svg)(\?[\s\S]+)?$/,
         loader: 'file'
+      },
+      {
+        test: /\.html$/,
+        loader: 'raw',
+        exclude: /node_modules/
       }
     ]
   },
   postcss: [autoprefixer],
   plugins: [
+    extractSass
   ]
 };
